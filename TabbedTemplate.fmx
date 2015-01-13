@@ -1,0 +1,130 @@
+object TabbedForm: TTabbedForm
+  Left = 0
+  Top = 0
+  Caption = 'TabbedForm'
+  ClientHeight = 567
+  ClientWidth = 384
+  FormFactor.Width = 1440
+  FormFactor.Height = 900
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  DesignerMasterStyle = 0
+  object HeaderToolBar: TToolBar
+    Anchors = []
+    Size.Width = 384.000000000000000000
+    Size.Height = 48.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    OnClick = HeaderToolBarClick
+    object ToolBarLabel: TLabel
+      Align = Client
+      Size.Width = 304.000000000000000000
+      Size.Height = 48.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'toollabel'
+      TextSettings.HorzAlign = Center
+      Text = 'Title'
+    end
+    object Button1: TButton
+      Align = Left
+      Size.Width = 80.000000000000000000
+      Size.Height = 48.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'backtoolbutton'
+      TabOrder = 0
+      Text = 'BACK'
+      OnClick = Button1Click
+    end
+  end
+  object TabControl1: TTabControl
+    Align = Client
+    FullSize = True
+    Size.Width = 384.000000000000000000
+    Size.Height = 519.000000000000000000
+    Size.PlatformDefault = False
+    TabHeight = 49.000000000000000000
+    TabIndex = 1
+    TabOrder = 1
+    TabPosition = Top
+    object TabItem1: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = False
+      Size.Width = 96.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'tabitemcustom'
+      TabOrder = 0
+      object ListBox1: TListBox
+        Align = Client
+        Size.Width = 384.000000000000000000
+        Size.Height = 470.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        DisableFocusEffect = True
+        DefaultItemStyles.ItemStyle = ''
+        DefaultItemStyles.GroupHeaderStyle = ''
+        DefaultItemStyles.GroupFooterStyle = ''
+        OnItemClick = ListBox1ItemClick
+      end
+    end
+    object TabItem2: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = True
+      Size.Width = 96.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'tabitemcustom'
+      TabOrder = 0
+      object ListBox2: TListBox
+        Align = Client
+        Size.Width = 384.000000000000000000
+        Size.Height = 470.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        DisableFocusEffect = True
+        DefaultItemStyles.ItemStyle = ''
+        DefaultItemStyles.GroupHeaderStyle = ''
+        DefaultItemStyles.GroupFooterStyle = ''
+      end
+    end
+    object TabItem3: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = False
+      Size.Width = 96.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+    end
+    object TabItem4: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = False
+      Size.Width = 94.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+    end
+  end
+  object GestureManager1: TGestureManager
+    Left = 304
+    Top = 56
+    GestureData = <
+      item
+        Control = Owner
+        Collection = <
+          item
+            GestureID = sgiLeft
+          end
+          item
+            GestureID = sgiRight
+          end>
+      end>
+  end
+end
