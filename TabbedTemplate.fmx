@@ -8,7 +8,7 @@ object TabbedForm: TTabbedForm
   FormFactor.Height = 900
   FormFactor.Devices = [Desktop]
   OnCreate = FormCreate
-  DesignerMasterStyle = 0
+  DesignerMasterStyle = 1
   object HeaderToolBar: TToolBar
     Anchors = []
     Size.Width = 384.000000000000000000
@@ -35,6 +35,18 @@ object TabbedForm: TTabbedForm
       Text = 'BACK'
       OnClick = Button1Click
     end
+    object Button2: TButton
+      Align = Left
+      Position.X = 80.000000000000000000
+      Size.Width = 80.000000000000000000
+      Size.Height = 48.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'backtoolbutton'
+      TabOrder = 1
+      Text = 'BACK'
+      Visible = False
+      OnClick = Button2Click
+    end
   end
   object TabControl1: TTabControl
     Align = Client
@@ -43,23 +55,23 @@ object TabbedForm: TTabbedForm
     Size.Height = 519.000000000000000000
     Size.PlatformDefault = False
     TabHeight = 49.000000000000000000
-    TabIndex = 1
+    TabIndex = 2
     TabOrder = 1
-    TabPosition = Top
+    TabPosition = None
     object TabItem1: TTabItem
       CustomIcon = <
         item
         end>
       IsSelected = False
-      Size.Width = 96.000000000000000000
-      Size.Height = 49.000000000000000000
+      Size.Width = 8.000000000000000000
+      Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'tabitemcustom'
       TabOrder = 0
       object ListBox1: TListBox
         Align = Client
         Size.Width = 384.000000000000000000
-        Size.Height = 470.000000000000000000
+        Size.Height = 519.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
         DisableFocusEffect = True
@@ -73,16 +85,38 @@ object TabbedForm: TTabbedForm
       CustomIcon = <
         item
         end>
-      IsSelected = True
-      Size.Width = 96.000000000000000000
-      Size.Height = 49.000000000000000000
+      IsSelected = False
+      Size.Width = 8.000000000000000000
+      Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'tabitemcustom'
       TabOrder = 0
       object ListBox2: TListBox
         Align = Client
         Size.Width = 384.000000000000000000
-        Size.Height = 470.000000000000000000
+        Size.Height = 519.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        DisableFocusEffect = True
+        DefaultItemStyles.ItemStyle = ''
+        DefaultItemStyles.GroupHeaderStyle = ''
+        DefaultItemStyles.GroupFooterStyle = ''
+        OnItemClick = ListBox2ItemClick
+      end
+    end
+    object TabItem3: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = True
+      Size.Width = 8.000000000000000000
+      Size.Height = 8.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      object ListBox3: TListBox
+        Align = Client
+        Size.Width = 384.000000000000000000
+        Size.Height = 519.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
         DisableFocusEffect = True
@@ -90,24 +124,26 @@ object TabbedForm: TTabbedForm
         DefaultItemStyles.GroupHeaderStyle = ''
         DefaultItemStyles.GroupFooterStyle = ''
       end
-    end
-    object TabItem3: TTabItem
-      CustomIcon = <
-        item
-        end>
-      IsSelected = False
-      Size.Width = 96.000000000000000000
-      Size.Height = 49.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 0
+      object MediaPlayer1: TMediaPlayer
+        Left = 176
+        Top = 272
+      end
+      object Label1: TLabel
+        Align = Client
+        AutoSize = True
+        Size.Width = 384.000000000000000000
+        Size.Height = 519.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Label1'
+      end
     end
     object TabItem4: TTabItem
       CustomIcon = <
         item
         end>
       IsSelected = False
-      Size.Width = 94.000000000000000000
-      Size.Height = 49.000000000000000000
+      Size.Width = 8.000000000000000000
+      Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
     end

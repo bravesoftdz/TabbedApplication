@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.TabControl,
-  FMX.StdCtrls, FMX.Gestures, FMX.Layouts, FMX.ListBox, IdHTTP;
+  FMX.StdCtrls, FMX.Gestures, FMX.Layouts, FMX.ListBox, IdHTTP, FMX.Media;
 
 type
   TTabbedForm = class(TForm)
@@ -20,6 +20,10 @@ type
     ListBox1: TListBox;
     ListBox2: TListBox;
     Button1: TButton;
+    ListBox3: TListBox;
+    MediaPlayer1: TMediaPlayer;
+    Button2: TButton;
+    Label1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormGesture(Sender: TObject; const EventInfo: TGestureEventInfo;
       var Handled: Boolean);
@@ -27,6 +31,9 @@ type
       const Item: TListBoxItem);
     procedure HeaderToolBarClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure ListBox2ItemClick(const Sender: TCustomListBox;
+      const Item: TListBoxItem);
+    procedure Button2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -35,9 +42,9 @@ type
 
 var
   TabbedForm: TTabbedForm;
-  a1,a2,a3,a4:array of string;
+  a1,a2,a3,a4:array of String;
   n,m:integer;
-  category:string;
+  category,seriya,videofile:String;
 implementation
 
 {$R *.fmx}
@@ -101,9 +108,9 @@ end;
 
 {*********** INITIALIZING END ***********}
 
-procedure getcategory(s:string);
+procedure getcategory(s:String);
 var
-  ss:string;
+  ss:String;
   i,r1,l1,r2,l2:integer;
 begin
   ss:=s;
@@ -133,7 +140,7 @@ procedure connect_index2;
 var
   idhttp: TidHttp;
  // JSON:  TJsonValue;
-  Getfile: string;
+  Getfile: String;
 //  Obj: TJSONObject;
  // Pair: TJSONPair;
 begin
@@ -186,7 +193,7 @@ begin
 
       // or, you can add items by creating an instance of TListBoxItem by yourself
       ListBoxItem := TListBoxItem.Create(TabbedForm.ListBox1);
-      ListBoxItem.Text := utf16decode(Buffer);
+      ListBoxItem.Text :=Buffer;// utf16decode(Buffer);
       // (aNone=0, aMore=1, aDetail=2, aCheckmark=3)
       ListBoxItem.ItemData.Accessory := TListBoxItemData.TAccessory(1);
       TabbedForm.ListBox1.AddObject(ListBoxItem);
@@ -206,7 +213,7 @@ end;
 
 procedure gettitle(s:string);
 var
-  ss:string;
+  ss:String;
   i,r1,l1,r2,l2:integer;
 begin
   ss:=s;
@@ -234,8 +241,7 @@ begin
 end;
 
 procedure showtitle;
-
-  var
+var
   j: Integer;
   Buffer: String;
   ListBoxItem : TListBoxItem;
@@ -258,7 +264,7 @@ begin
 
       // or, you can add items by creating an instance of TListBoxItem by yourself
       ListBoxItem := TListBoxItem.Create(TabbedForm.ListBox2);
-      ListBoxItem.Text := utf16decode(Buffer);
+      ListBoxItem.Text := Buffer;//utf16decode(Buffer);
       // (aNone=0, aMore=1, aDetail=2, aCheckmark=3)
       ListBoxItem.ItemData.Accessory := TListBoxItemData.TAccessory(1);
        TabbedForm.ListBox2.AddObject(ListBoxItem);
@@ -266,10 +272,12 @@ begin
    TabbedForm.ListBox2.EndUpdate;
 end;
 
+
+
 procedure connect_index_title;
 var
   idhttp: TidHttp;
-  Getfile:string;
+  Getfile:String;
 begin
 idhttp :=Tidhttp.Create;
 try
@@ -281,6 +289,44 @@ finally
 end;
 
 end;
+
+procedure getmp4(s:string);
+var
+  ss:String;
+  i,r1,l1,r2,l2:integer;
+begin
+  ss:=s;
+  l1:=pos('|video|',ss);
+  r1:=pos('.mp4',ss);
+  videofile:=copy(ss,l1+7,r1-l1-3);
+end;
+
+
+Procedure getxfields;
+var
+  idhttp: TidHttp;
+  Getfile:String;
+begin
+idhttp :=Tidhttp.Create;
+try
+  TabbedForm.ListBox2.Clear;
+  Getfile:=(idhttp.Get('http://iplay.kaztrk.kz/connect/index.php?row=xfields&table=dle_post&t=id&y=' + seriya));
+  getmp4(Getfile);
+finally
+  idhttp.Free;
+end;
+
+end;
+
+
+Procedure tab3show;
+begin
+   getxfields;
+  tabbedform.Label1.Text:= videofile;
+//   playvideo;
+end;
+
+
 
 procedure tab2show;
 begin
@@ -303,11 +349,29 @@ end;
 
 
 
+procedure TTabbedForm.ListBox2ItemClick(const Sender: TCustomListBox;
+  const Item: TListBoxItem);
+begin
+  seriya:=  a4[item.Index-1];
+  TabControl1.ActiveTab := TabItem3;
+  button1.Visible:=false;
+  button2.Visible:=true;
+  tab3show;
+end;
+
 procedure TTabbedForm.Button1Click(Sender: TObject);
 begin
   TabControl1.ActiveTab := TabItem1;
   button1.Visible:=false;
   tab1show;
+end;
+
+procedure TTabbedForm.Button2Click(Sender: TObject);
+begin
+  TabControl1.ActiveTab := TabItem2;
+  button2.Visible:=false;
+  button1.Visible:=true;
+  tab2show;
 end;
 
 procedure TTabbedForm.FormCreate(Sender: TObject);
