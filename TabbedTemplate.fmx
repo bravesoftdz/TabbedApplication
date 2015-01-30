@@ -113,28 +113,27 @@ object TabbedForm: TTabbedForm
       Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
-      object ListBox3: TListBox
-        Align = Client
-        Size.Width = 384.000000000000000000
-        Size.Height = 519.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 0
-        DisableFocusEffect = True
-        DefaultItemStyles.ItemStyle = ''
-        DefaultItemStyles.GroupHeaderStyle = ''
-        DefaultItemStyles.GroupFooterStyle = ''
-      end
       object MediaPlayer1: TMediaPlayer
         Left = 176
         Top = 272
       end
       object Label1: TLabel
-        Align = Client
         AutoSize = True
-        Size.Width = 384.000000000000000000
-        Size.Height = 519.000000000000000000
+        Position.X = 184.000000000000000000
+        Position.Y = 128.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 18.000000000000000000
         Size.PlatformDefault = False
         Text = 'Label1'
+      end
+      object Button3: TButton
+        Position.X = 80.000000000000000000
+        Position.Y = 280.000000000000000000
+        Size.Width = 209.000000000000000000
+        Size.Height = 105.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        Text = 'Button3'
       end
     end
     object TabItem4: TTabItem

@@ -5,7 +5,10 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.TabControl,
-  FMX.StdCtrls, FMX.Gestures, FMX.Layouts, FMX.ListBox, IdHTTP, FMX.Media;
+  {$IFDEF ANDROID}
+   Androidapi.JNI.GraphicsContentViewText, Androidapi.JNI.Net, Androidapi.Helpers, FMX.Helpers.Android,
+  {$ENDIF}
+   FMX.StdCtrls, FMX.Gestures, FMX.Layouts, FMX.ListBox, IdHTTP, FMX.Media;
 
 type
   TTabbedForm = class(TForm)
@@ -20,10 +23,10 @@ type
     ListBox1: TListBox;
     ListBox2: TListBox;
     Button1: TButton;
-    ListBox3: TListBox;
     MediaPlayer1: TMediaPlayer;
     Button2: TButton;
     Label1: TLabel;
+    Button3: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormGesture(Sender: TObject; const EventInfo: TGestureEventInfo;
       var Handled: Boolean);
@@ -34,6 +37,9 @@ type
     procedure ListBox2ItemClick(const Sender: TCustomListBox;
       const Item: TListBoxItem);
     procedure Button2Click(Sender: TObject);
+    {$IFDEF ANDROID}
+    procedure Button3Click(Sender: TObject);
+     {$ENDIF}
   private
     { Private declarations }
   public
@@ -373,6 +379,20 @@ begin
   button1.Visible:=true;
   tab2show;
 end;
+{$IFDEF ANDROID}
+procedure TTabbedForm.Button3Click(Sender: TObject);
+var
+  Intent: JIntent;
+  Data: JNet_Uri;
+  AFileName : string;
+begin
+  AFileName:=  videofile;
+  Intent := TJIntent.JavaClass.init(TJIntent.JavaClass.ACTION_VIEW);
+  Data := StrToJURI(AFileName);
+  Intent.setDataAndType(Data, StringToJString('video/avi'));
+  SharedActivity.startActivity(Intent);
+end;
+{$ENDIF}
 
 procedure TTabbedForm.FormCreate(Sender: TObject);
 begin
