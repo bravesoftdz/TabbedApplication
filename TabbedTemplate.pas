@@ -8,6 +8,9 @@ uses
   {$IFDEF ANDROID}
    Androidapi.JNI.GraphicsContentViewText, Androidapi.JNI.Net, Androidapi.Helpers, FMX.Helpers.Android,
   {$ENDIF}
+  {$IFDEF IOS}
+   FMX.Helpers.iOS, iOSapi.Foundation,
+  {$ENDIF}
    FMX.StdCtrls, FMX.Gestures, FMX.Layouts, FMX.ListBox, IdHTTP, FMX.Media;
 
 type
@@ -37,9 +40,9 @@ type
     procedure ListBox2ItemClick(const Sender: TCustomListBox;
       const Item: TListBoxItem);
     procedure Button2Click(Sender: TObject);
-    {$IFDEF ANDROID}
     procedure Button3Click(Sender: TObject);
-     {$ENDIF}
+
+
   private
     { Private declarations }
   public
@@ -305,6 +308,8 @@ begin
   l1:=pos('|video|',ss);
   r1:=pos('.mp4',ss);
   videofile:=copy(ss,l1+7,r1-l1-3);
+  while pos('\',videofile)>0 do delete(videofile,pos('\',videofile),1);
+  if copy(videofile,1,5)<>'http:' then  videofile:='http:'+videofile;
 end;
 
 
@@ -379,20 +384,44 @@ begin
   button1.Visible:=true;
   tab2show;
 end;
-{$IFDEF ANDROID}
+
+
+
 procedure TTabbedForm.Button3Click(Sender: TObject);
+{$IFDEF IOS}
+function OpenURL(const AUrl: string): Boolean;
 var
+  Url: NSURL;
+begin
+  Url := TNSUrl.Wrap(TNSUrl.OCClass.URLWithString(NSStr(AUrl)));
+  Result := SharedApplication.openUrl(Url);
+end;
+{$ENDIF}
+
+var
+{$IFDEF ANDROID}
   Intent: JIntent;
   Data: JNet_Uri;
   AFileName : string;
+{$ENDIF}
+i:integer;
 begin
-  AFileName:=  videofile;
+{$IFDEF ANDROID}
+  AFileName:=videofile;// 'http://kaztv.kaztrk.kz/upload/media/video/e256e9649f8f35af142c5b312306434a.mp4';
   Intent := TJIntent.JavaClass.init(TJIntent.JavaClass.ACTION_VIEW);
   Data := StrToJURI(AFileName);
-  Intent.setDataAndType(Data, StringToJString('video/avi'));
+  Intent.setDataAndType(Data, StringToJString('video/mp4'));
   SharedActivity.startActivity(Intent);
-end;
 {$ENDIF}
+{$IFDEF IOS}
+  if OpenURL(videofile) then i:=0;
+{$ENDIF}
+
+end;
+
+
+
+
 
 procedure TTabbedForm.FormCreate(Sender: TObject);
 begin

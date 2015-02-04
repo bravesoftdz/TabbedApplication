@@ -8,7 +8,7 @@ object TabbedForm: TTabbedForm
   FormFactor.Height = 900
   FormFactor.Devices = [Desktop]
   OnCreate = FormCreate
-  DesignerMasterStyle = 1
+  DesignerMasterStyle = 3
   object HeaderToolBar: TToolBar
     Anchors = []
     Size.Width = 384.000000000000000000
@@ -121,8 +121,8 @@ object TabbedForm: TTabbedForm
         AutoSize = True
         Position.X = 184.000000000000000000
         Position.Y = 128.000000000000000000
-        Size.Width = 40.000000000000000000
-        Size.Height = 18.000000000000000000
+        Size.Width = 37.000000000000000000
+        Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
         Text = 'Label1'
       end
@@ -134,6 +134,7 @@ object TabbedForm: TTabbedForm
         Size.PlatformDefault = False
         TabOrder = 1
         Text = 'Button3'
+        OnClick = Button3Click
       end
     end
     object TabItem4: TTabItem
