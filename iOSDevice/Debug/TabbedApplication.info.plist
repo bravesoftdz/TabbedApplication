@@ -9,7 +9,7 @@
 	<key>CFBundleDisplayName</key>
         <string>TabbedApplication</string>
 	<key>CFBundleIdentifier</key>
-        <string>TabbedApplication</string>
+        <string>kz.kaztrk.tabbed</string>
 	<key>CFBundleInfoDictionaryVersion</key>
         <string>6.0</string>
 	<key>CFBundleVersion</key>
@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
         <string>APPL</string>
 	<key>CFBundleSignature</key>
-        <string>????</string>
+        <string>Y226VR8J29</string>
 	<key>LSRequiresIPhoneOS</key>
         <string>true</string>
 	<key>CFBundleAllowMixedLocalizations</key>

@@ -11,7 +11,7 @@ uses
   {$IFDEF IOS}
    FMX.Helpers.iOS, iOSapi.Foundation,
   {$ENDIF}
-   FMX.StdCtrls, FMX.Gestures, FMX.Layouts, FMX.ListBox, IdHTTP, FMX.Media;
+   FMX.StdCtrls, FMX.Gestures, FMX.Layouts, FMX.ListBox, IdHTTP, FMX.Media,IdTCPClient;
 
 type
   TTabbedForm = class(TForm)
@@ -26,21 +26,24 @@ type
     ListBox1: TListBox;
     ListBox2: TListBox;
     Button1: TButton;
-    MediaPlayer1: TMediaPlayer;
     Button2: TButton;
     Label1: TLabel;
     Button3: TButton;
+    ImageControl1: TImageControl;
     procedure FormCreate(Sender: TObject);
     procedure FormGesture(Sender: TObject; const EventInfo: TGestureEventInfo;
       var Handled: Boolean);
     procedure ListBox1ItemClick(const Sender: TCustomListBox;
       const Item: TListBoxItem);
-    procedure HeaderToolBarClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure ListBox2ItemClick(const Sender: TCustomListBox;
       const Item: TListBoxItem);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
+      Shift: TShiftState);
+    procedure ImageControl1Click(Sender: TObject);
+    procedure TabControl1Change(Sender: TObject);
 
 
   private
@@ -53,7 +56,7 @@ var
   TabbedForm: TTabbedForm;
   a1,a2,a3,a4:array of String;
   n,m:integer;
-  category,seriya,videofile:String;
+  category,seriya,videofile,pnglink:String;
 implementation
 
 {$R *.fmx}
@@ -110,9 +113,36 @@ end;
 
 
 
-procedure TTabbedForm.HeaderToolBarClick(Sender: TObject);
+procedure TTabbedForm.ImageControl1Click(Sender: TObject);
+{$IFDEF IOS}
+function OpenURL(const AUrl: string): Boolean;
+var
+  Url: NSURL;
 begin
+  Url := TNSUrl.Wrap(TNSUrl.OCClass.URLWithString(NSStr(AUrl)));
+  Result := SharedApplication.openUrl(Url);
+end;
+{$ENDIF}
 
+var
+{$IFDEF ANDROID}
+  Intent: JIntent;
+  Data: JNet_Uri;
+  AFileName : string;
+{$ENDIF}
+i:integer;
+
+begin
+{$IFDEF ANDROID}
+  AFileName:=videofile;// 'http://kaztv.kaztrk.kz/upload/media/video/e256e9649f8f35af142c5b312306434a.mp4';
+  Intent := TJIntent.JavaClass.init(TJIntent.JavaClass.ACTION_VIEW);
+  Data := StrToJURI(AFileName);
+  Intent.setDataAndType(Data, StringToJString('video/mp4'));
+  SharedActivity.startActivity(Intent);
+{$ENDIF}
+{$IFDEF IOS}
+  if OpenURL(videofile) then i:=0;
+{$ENDIF}
 end;
 
 {*********** INITIALIZING END ***********}
@@ -299,6 +329,41 @@ end;
 
 end;
 
+procedure LoadWebImage(url: string; image :TBitmap);
+var
+  idhttp : TIdHTTP;
+  ms : TMemoryStream;
+begin
+  IdHTTP := TIdHTTP.Create(nil);
+  ms := TMemoryStream.Create;
+  try
+    idhttp.Get(url, ms);
+    ms.Position := 0;
+    image.LoadFromStream(ms);
+  finally
+    ms.Free;
+    idhttp.Free;
+  end;
+end;
+
+procedure getpng(s:string);
+var
+  ss:String;
+  i,r1,l1,r2,l2:integer;
+begin
+  ss:=s;
+  l1:=pos('poster|',ss);
+  r1:=pos('.png',ss);
+  pnglink:=copy(ss,l1+7,r1-l1-3);
+  while pos('\',pnglink)>0 do delete(pnglink,pos('\',pnglink),1);
+  if pos('kaztrk.kz',pnglink)=0 then begin
+    pnglink:='//iplay.kaztrk.kz'+pnglink;
+  end;
+  if copy(pnglink,1,5)<>'http:' then  pnglink:='http:'+pnglink;
+  LoadWebImage(pnglink,TabbedForm.ImageControl1.Bitmap );
+  TabbedForm.imagecontrol1.Bitmap.Resize(185,250);
+end;
+
 procedure getmp4(s:string);
 var
   ss:String;
@@ -310,6 +375,7 @@ begin
   videofile:=copy(ss,l1+7,r1-l1-3);
   while pos('\',videofile)>0 do delete(videofile,pos('\',videofile),1);
   if copy(videofile,1,5)<>'http:' then  videofile:='http:'+videofile;
+
 end;
 
 
@@ -323,6 +389,7 @@ try
   TabbedForm.ListBox2.Clear;
   Getfile:=(idhttp.Get('http://iplay.kaztrk.kz/connect/index.php?row=xfields&table=dle_post&t=id&y=' + seriya));
   getmp4(Getfile);
+  getpng(Getfile);
 finally
   idhttp.Free;
 end;
@@ -333,7 +400,7 @@ end;
 Procedure tab3show;
 begin
    getxfields;
-  tabbedform.Label1.Text:= videofile;
+  //tabbedform.Label1.Text:= videofile;
 //   playvideo;
 end;
 
@@ -353,7 +420,7 @@ procedure TTabbedForm.ListBox1ItemClick(const Sender: TCustomListBox;
 begin
   category:=  a2[item.Index-1];
   TabControl1.ActiveTab := TabItem2;
-  button1.Visible:=true;
+  //button1.Visible:=true;
   tab2show;
 end;
 
@@ -365,24 +432,37 @@ procedure TTabbedForm.ListBox2ItemClick(const Sender: TCustomListBox;
 begin
   seriya:=  a4[item.Index-1];
   TabControl1.ActiveTab := TabItem3;
-  button1.Visible:=false;
-  button2.Visible:=true;
+ // button1.Visible:=false;
+ // button2.Visible:=true;
   tab3show;
+end;
+
+procedure TTabbedForm.TabControl1Change(Sender: TObject);
+begin
+if tabcontrol1.ActiveTab=TabItem1 then button1.Visible:=false else button1.Visible:=true;
+
 end;
 
 procedure TTabbedForm.Button1Click(Sender: TObject);
 begin
-  TabControl1.ActiveTab := TabItem1;
-  button1.Visible:=false;
-  tab1show;
+  if (TabControl1.ActiveTab <> TabItem1) then begin
+       if TabControl1.ActiveTab = TabItem4 then TabControl1.ActiveTab := TabItem3
+       else
+       if TabControl1.ActiveTab = TabItem3 then TabControl1.ActiveTab := TabItem2
+       else
+       if TabControl1.ActiveTab = TabItem2 then TabControl1.ActiveTab := TabItem1;
+
+    end;
+ // button1.Visible:=false;
+ // tab1show;
 end;
 
 procedure TTabbedForm.Button2Click(Sender: TObject);
 begin
   TabControl1.ActiveTab := TabItem2;
-  button2.Visible:=false;
-  button1.Visible:=true;
-  tab2show;
+ // button2.Visible:=false;
+ // button1.Visible:=true;
+ // tab2show;
 end;
 
 
@@ -452,6 +532,31 @@ begin
   end;
 {$ENDIF}
 end;
+
+
+procedure TTabbedForm.FormKeyUp(Sender: TObject; var Key: Word;
+  var KeyChar: Char; Shift: TShiftState);
+begin
+ if Key = vkHardwareBack then
+  begin
+    {if (TabControl1.ActiveTab = TabItem1) and (TabControl2.ActiveTab = TabItem6) then
+    begin
+      TabControl2.Previous;
+      Key := 0;
+    end;  }
+    {$IFDEF ANDROID}
+    if (TabControl1.ActiveTab <> TabItem1) then begin
+       if TabControl1.ActiveTab = TabItem4 then TabControl1.ActiveTab := TabItem3
+       else
+       if TabControl1.ActiveTab = TabItem3 then TabControl1.ActiveTab := TabItem2
+       else
+       if TabControl1.ActiveTab = TabItem2 then TabControl1.ActiveTab := TabItem1;
+       key:=0;
+    end;
+   {$ENDIF}
+end;
+end;
+
 
 
 end.
